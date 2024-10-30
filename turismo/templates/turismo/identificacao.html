@@ -1,0 +1,23 @@
+{% extends 'modelo.html' %}
+{% load static %}
+
+{% block title %}
+    Envie a imagem do animal que deseja identificar
+{% endblock %}
+
+{% block body %}
+
+{% if uploaded_image_url is not None %}
+    <h2>Imagem classificada</h2>
+    <img src="{{ uploaded_image_url }}" alt="Uploaded Image">
+{% else %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="image">Selecione uma imagem:</label>
+        <input type="file" id="image" name="image"  accept="image/*" required>
+        <button type="submit" class="btn btn-secondary" >Enviar</button>
+    </form>
+{% endif %}
+
+<a href="{% url 'identificarAnimais' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

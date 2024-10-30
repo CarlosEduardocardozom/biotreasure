@@ -1,0 +1,21 @@
+{% extends 'modelo.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Perfil do Usuário</h2>
+    <p><strong>Nome:</strong> {{ user_data.nome }}</p>
+    <p><strong>Email:</strong> {{ user_data.email }}</p>
+    {% if user_data.social_accounts %}
+        <p><strong>Conectado via:</strong> Google</p>
+    {% else %}
+        <p><strong>Conectado via:</strong> Cadastro manual</p>
+    {% endif %}
+</div>
+</body>
+</html>
