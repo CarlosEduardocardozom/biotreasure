@@ -1,0 +1,25 @@
+* {
+	font-family: Mulish;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-style: normal;
+}
+
+/* Ajuste para remover margens e preencher a tela */
+html,
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map {
+	height: calc(100vh - 56px);
+	/* Altura total da tela menos o tamanho da navbar */
+	width: 100%;
+}
+
+/* Estilos adicionais para melhorar o layout */
+.container {
+	padding: 0;
+}

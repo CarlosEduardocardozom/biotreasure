@@ -1,133 +1,162 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
-        rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <title>{% block title %}Defina o título da página{% endblock %}</title>
-    <style>
-        /* Ajuste para remover margens e garantir o preenchimento correto da tela */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Montserrat', sans-serif;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Biotreasure Map{% endblock %}</title>
 
-        /* O mapa preencherá toda a área restante da tela */
-        #map {
-            height: 100vh;
-            width: 100%;
-        }
-
-        .navbar .nav-link {
-            color: white !important;
-        }
-
-        .bg-green {
-            background-color: #499449 !important;
-        }
-
-        /* Estilo para o menu lateral */
-        #sidebar {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000; /* Garante que o sidebar fique sobre o mapa */
-        }
-    </style>
+  <!-- Bootstrap + Leaflet + Font + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/stylemaps.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-green">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'main' %}">
-                <h2 style="color:white">Biotreasure</h2>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'main' %}">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Turismo
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'turismo' %}">Página de turismo</a></li>
-                            <li><a class="dropdown-item" href="{% url 'identificarAnimais' %}">Identificar Animal</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{% url 'mapas' %}" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Mapas
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'cadastrarPonto' %}">Criar Ponto</a></li>
-                            <li><a class="dropdown-item" href="{% url 'listarPontos' %}">Listar Pontos</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'cadastrarRotas' %}">Criar Rota</a></li>
-                            <li><a class="dropdown-item" href="{% url 'listarRotas' %}">Listar Rotas</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Perfil
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="nav-link" href="{% url 'perfil' %}">Perfil</a></li>
-                        </ul>
-                    </li>       
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="O que você procura?"
-                        aria-label="Search">
-                    <button class="btn btn-outline-light" type="submit">Procurar</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'main' %}"><h2>Biotreasure</h2></a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="{% url 'main' %}">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Turismo</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'turismo' %}">Página de turismo</a></li>
+              <li><a class="dropdown-item" href="{% url 'identificarAnimais' %}">Identificar Animal</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Mapas</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'cadastrarPonto' %}">Criar Ponto</a></li>
+              <li><a class="dropdown-item" href="{% url 'listarPontos' %}">Listar Pontos</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'cadastrarRotas' %}">Criar Rota</a></li>
+              <li><a class="dropdown-item" href="{% url 'listarRotas' %}">Listar Rotas</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Perfil</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'perfil' %}">Ver Perfil</a></li>
+            </ul>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" placeholder="O que você procura?" />
+          <button class="btn btn-outline-light">Procurar</button>
+        </form>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Mapa -->
-    <div id="map-container" style="position: relative; height: 100vh;">
-        <div id="map"></div>
-        <div id="sidebar">
-            <h4>Tempo Estimado</h4>
-            <select id="transport-mode">
-                <option value="driving-car">Carro</option>
-                <option value="cycling-regular">Bicicleta</option>
-                <option value="foot-walking">A pé</option>
-            </select>
-            <div id="travel-time">Selecione um modo de transporte.</div>
-        </div>
+   <!-- navbar omitido para brevidade -->
+    
+    <div id="search-categories">
+    <div class="search-wrapper">
+        <input type="text" id="place-search" placeholder="Pesquise no Biotreasure...">
+        <button id="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+    <div class="cat-buttons">
+        <button data-cat="restaurant"><i class="fas fa-utensils"></i> Restaurantes</button>
+        <button data-cat="hotel"><i class="fas fa-bed"></i> Hotéis</button>
+        <button data-cat="museum"><i class="fas fa-landmark"></i> Museus</button>
+        <button data-cat="bus_station"><i class="fas fa-bus"></i> Transporte público</button>
+        <button data-cat="pharmacy"><i class="fas fa-prescription-bottle-alt"></i> Farmácias</button>
+        <button data-cat="atm"><i class="fas fa-money-check-alt"></i> Caixas eletrônicos</button>
+    </div>
+    </div>
+  <!-- MAP + CONTROLES -->
+  <div id="map-container">
+    <div id="map"></div>
+
+    <!-- Sidebar transporte/tempo -->
+    <div id="sidebar">
+      <h5>Modo de Transporte</h5>
+      <select id="transport-mode" class="form-select form-select-sm mb-2">
+        <option value="driving-car">Carro</option>
+        <option value="cycling-regular">Bicicleta</option>
+        <option value="foot-walking">A pé</option>
+      </select>
+      <div id="travel-time">Aguardando localização…</div>
     </div>
 
-    {% load static %}
-    <script src="{% static 'js/actionmaps.js' %}"></script>
+    <!-- Zoom In/Out -->
+    <div class="zoom-controls">
+      <div id="zoom-in" class="custom-button" title="Aumentar Zoom">
+        <i class="fas fa-plus"></i>
+      </div>
+      <div id="zoom-out" class="custom-button" title="Diminuir Zoom">
+        <i class="fas fa-minus"></i>
+      </div>
+    </div>
+
+    <!-- Botão de Tipos de Camadas -->
+    <div id="toggle-map" class="custom-button" title="Tipos de Camadas">
+      <i class="fas fa-layer-group"></i>
+    </div>
+
+   <!-- Menu de Camadas -->
+<div id="layer-menu">
+  <h6>Estilos de mapa</h6>
+  <div class="layer-grid">
+    <div class="layer-option" data-url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" data-attrib="&copy; OSM">
+      <img src="{% static 'media/padrao.png' %}" alt="Padrão">
+      <span>Padrão</span>
+    </div>
+    <div class="layer-option" data-url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?mode=satellite" data-attrib="© Satélite">
+      <img src="{% static 'media/satelite.png' %}" alt="Satélite">
+      <span>Satélite</span>
+    </div>
+    <div class="layer-option" data-url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" data-attrib="© Topo">
+      <img src="{% static 'media/topografico.png' %}" alt="Híbrido">
+      <span>Híbrido</span>
+    </div>
+    <div class="layer-option" data-url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png" data-attrib="© Escuro">
+      <img src="{% static 'media/escuro.png' %}" alt="Escuro">
+      <span>Escuro</span>
+    </div>
+    <div class="layer-option" data-url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png" data-attrib="© Claro">
+      <img src="{% static 'media/claro.png' %}" alt="Claro">
+      <span>Claro</span>
+    </div>
+    <div class="layer-option" data-url="https://tiles.stadiamaps.com/tiles/alidade_smooth_night/{z}/{x}/{y}.png" data-attrib="© Inverno">
+      <img src="{% static 'media/inverno.png' %}" alt="Inverno">
+      <span>Inverno</span>
+    </div>
+  </div>
+  <hr>
+  <h6>Preferências de mapa</h6>
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="toggle-community">
+    <label class="form-check-label" for="toggle-community">Fotos da comunidade</label>
+  </div>
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="toggle-poi">
+    <label class="form-check-label" for="toggle-poi">Pontos de interesse</label>
+  </div>
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="toggle-legend">
+    <label class="form-check-label" for="toggle-legend">Legendas dos mapas</label>
+  </div>
+</div>
+    <!-- Botão Localizar Usuário -->
+    <div id="locate-btn" class="custom-button" title="Minha Localização">
+      <i class="fas fa-crosshairs"></i>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="{% static 'js/actionmaps.js' %}"></script>
 </body>
 
 </html>

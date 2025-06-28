@@ -1,11 +1,105 @@
-{%extends "modelo.html"%}
+{% extends 'modelo.html' %}
+{% load static %}
+
 {% block title %}
-Turismo
+Explore o Turismo
+{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 {% endblock %}
 
 {% block body %}
 
-{%block titlebody%}
-Página de Túrismo
-{%endblock%}
+<!-- Hero Banner -->
+<div class="container-fluid p-5 text-center text-white bg-dark"
+     style="background-image: url('{% static "media/teste5.jpeg" %}'); background-size: cover; background-position: center;">
+    <h1 class="display-4">Explore Destinos Incríveis</h1>
+    <p class="lead">Descubra aventuras inesquecíveis na natureza</p>
+    <a href="{% url 'cadastrarPonto' %}" class="btn btn-outline-light btn-lg mt-3">Cadastre um Ponto Turístico</a>
+</div>
+
+<!-- Destinos Populares -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">Destinos Populares</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for destino in destinos_populares %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <img src="{{ destino.imagem.url }}" class="card-img-top" alt="{{ destino.nome }}">
+                <div class="card-body">
+                    <h5 class="card-title text-success">{{ destino.nome }}</h5>
+                    <p class="card-text">{{ destino.descricao|truncatewords:20 }}</p>
+                    <a href="{% url 'detalhesPonto' destino.id %}" class="btn btn-success btn-sm">Saiba mais</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Atividades -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">Atividades ao Ar Livre</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <img src="{% static 'media/teste4.jpeg' %}" class="card-img-top" alt="Trilha">
+                <div class="card-body">
+                    <h5 class="card-title">Trilhas e Caminhadas</h5>
+                    <p class="card-text">Explore trilhas na natureza e descubra paisagens deslumbrantes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <img src="{% static 'media/teste3.jpeg' %}" class="card-img-top" alt="Cachoeira">
+                <div class="card-body">
+                    <h5 class="card-title">Banho de Cachoeira</h5>
+                    <p class="card-text">Refresque-se em águas cristalinas e tranquilas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow border-0">
+                <img src="{% static 'media/teste1.jpg' %}" class="card-img-top" alt="Passeio de barco">
+                <div class="card-body">
+                    <h5 class="card-title">Passeios de Barco</h5>
+                    <p class="card-text">Aproveite um passeio de barco com vistas incríveis e momentos relaxantes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mapa -->
+<section class="container-fluid my-5">
+    <h2 class="text-center mb-4">Localize os Pontos Turísticos</h2>
+    <div id="map" class="rounded shadow-sm" style="height: 500px;"></div>
+</section>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var map = L.map('map').setView([-23.5489, -46.6388], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        {% for destino in destinos_populares %}
+            L.marker([{{ destino.latitude }}, {{ destino.longitude }}])
+                .addTo(map)
+                .bindPopup("<b>{{ destino.nome }}</b><br>{{ destino.descricao|truncatewords:15 }}");
+        {% endfor %}
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 400);
+    });
+</script>
+
 {% endblock %}

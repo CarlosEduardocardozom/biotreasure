@@ -16,6 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static  # ✅ Essa linha é obrigatória
+
 
 urlpatterns = [
     path("", include('usuarios.urls')),
@@ -23,3 +26,6 @@ urlpatterns = [
     path("mapas/", include('mapas.urls')),
     path("turismo/", include('turismo.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
